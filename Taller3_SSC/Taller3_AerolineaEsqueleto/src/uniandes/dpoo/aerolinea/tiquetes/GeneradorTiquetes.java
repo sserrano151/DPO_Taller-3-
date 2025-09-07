@@ -5,6 +5,8 @@ import java.util.Set;
 
 import uniandes.dpoo.aerolinea.modelo.Vuelo;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
+import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
+
 
 /**
  * Esta clase representa al módulo del sistema que es capaz de generar nuevos tiquetes, asignándole a cada uno un código único.
@@ -27,27 +29,27 @@ public class GeneradorTiquetes
      */
     public static Tiquete generarTiquete( Vuelo vuelo, Cliente cliente, int tarifa )
     {
-        int numero = ( int ) ( Math.random( ) * 10e7 );
+    	int numero = (int) (Math.random() * 10e7);
         String codigo = "" + numero;
-        while( codigos.contains( codigo ) )
-        {
-            numero = ( int ) ( Math.random( ) * 10e7 );
+        while (codigos.contains(codigo)) {
+            numero = (int) (Math.random() * 10e7);
             codigo = "" + numero;
-        }
-
-        while( codigo.length( ) < 7 )
+            }
+        while (codigo.length() < 7)
             codigo = "0" + codigo;
 
-        return new Tiquete( codigo, vuelo, cliente, tarifa );
-    }
+        return new Tiquete(codigo, vuelo, cliente, tarifa);
+        
+        	
+        }
 
-    /**
-     * Registra que un cierto tiquete ya fue vendido, para que el generador de tiquetes no vaya a generar otro tiquete con el mismo código
-     * @param unTiquete El tiquete existente
-     */
+
     public static void registrarTiquete( Tiquete unTiquete )
     {
-        // TODO implementar
+    	if (unTiquete != null) {
+            codigos.add(unTiquete.getCodigo());
+            }
+    	
     }
 
     /**
@@ -57,7 +59,7 @@ public class GeneradorTiquetes
      */
     public static boolean validarTiquete( String codigoTiquete )
     {
-        // TODO implementar
-        return false;
+        
+        return codigos.contains(codigoTiquete);
     }
 }
