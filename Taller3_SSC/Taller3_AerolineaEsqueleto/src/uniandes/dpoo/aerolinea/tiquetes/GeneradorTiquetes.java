@@ -5,7 +5,7 @@ import java.util.Set;
 
 import uniandes.dpoo.aerolinea.modelo.Vuelo;
 import uniandes.dpoo.aerolinea.modelo.cliente.Cliente;
-import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
+
 
 
 /**

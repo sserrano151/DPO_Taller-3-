@@ -8,14 +8,16 @@ public class Tiquete {
     private boolean usado;
     private Vuelo vuelo;
     private Cliente cliente;
-	public Tiquete(String codigo, int tarifa, boolean usado, Vuelo vuelo, Cliente cliente) {
+	
+	public Tiquete(String codigo, Vuelo vuelo, Cliente cliente, int tarifa) {
 		super();
 		this.codigo = codigo;
-		this.vuelo = vuelo;
-		this.cliente = cliente;
-		this.tarifa = tarifa;
-		this.cliente = cliente;
+        this.vuelo = vuelo;
+        this.cliente = cliente;
+        this.tarifa = tarifa;
+        this.usado = false;
 	}
+	
 	public String getCodigo() {
 		return codigo;
 	}
@@ -25,7 +27,7 @@ public class Tiquete {
 	}
 	
 	
-	public boolean isUsado() {
+	public boolean esUsado() {
 		return usado;
 	}
 	
@@ -38,7 +40,9 @@ public class Tiquete {
 	}
 	public void setUsado(boolean usado) { this.usado = usado; 
 	}
-	
+	public void marcarComoUsado() {
+        this.usado = true;
+    }
 	}
     
 

@@ -25,8 +25,12 @@ public class CentralPersistencia
      * @throws TipoInvalidoException Se lanza esta excepción si se utiliza un tipo de archivo que no es válido
      */
     public static IPersistenciaAerolinea getPersistenciaAerolinea( String tipoArchivo ) throws TipoInvalidoException
-    {
-        // TODO implementar
+    {     if (JSON.equals(tipoArchivo))  
+    	return new PersistenciaAerolineaJson();
+          if (PLAIN.equals(tipoArchivo)) 
+        	  return new PersistenciaAerolineaPlaintext();
+          throw new TipoInvalidoException("Tipo de archivo inválido para Aerolínea: " + tipoArchivo);
+        
     }
 
     /**
