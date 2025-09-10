@@ -20,7 +20,11 @@ public class Vuelo {
 		this.fecha = fecha;
 		this.ruta = ruta;
 		this.avion = avion;
-	}
+    }
+    public Vuelo(Ruta ruta, String fecha, Avion avion){
+	this(fecha, ruta, avion);
+}
+	
 	public String getFecha() {
 		return fecha;
 	}

@@ -19,11 +19,15 @@ public class Aeropuerto
 	    private double longitud;
 	    private static Set<String> codigosUtilizados = new HashSet<String>();
 	    private static int RADIO_TERRESTRE = 6371;
-	    
+	    public int calcularDistancia(Aeropuerto otro) {
+	        return calcularDistancia(this, otro);
+	    }
 	    
 	    
     public Aeropuerto(String nombre, String codigo, String nombreCiudad, double latitud, double longitud) {
 			super();
+			if (!codigosUtilizados.add(codigo))
+	            throw new IllegalArgumentException("Código de aeropuerto duplicado.");
 			this.nombre = nombre;
 			this.codigo = codigo;
 			this.nombreCiudad = nombreCiudad;

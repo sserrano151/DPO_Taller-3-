@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import uniandes.dpoo.aerolinea.tiquetes.Tiquete;
 import java.util.Objects;
+import java.util.Collections;
+import uniandes.dpoo.aerolinea.modelo.Vuelo;
 
 
 public abstract class Cliente {
@@ -20,7 +22,7 @@ public String getIdentificador() {
 	
 }
 public Collection<Tiquete> getTiquetes(){
-	return tiquetes;
+	 return Collections.unmodifiableCollection(tiquetes);
 }
 public void agregarTiquete(Tiquete tiquete) {
 	if (tiquete != null) {
@@ -34,6 +36,15 @@ public int getSaldoPendiente() {
 }
     return total;
 }
+public void usarTiquetes(Vuelo vuelo) {
+    for (Tiquete t : tiquetes) {
+        if (!t.esUsado() && t.getVuelo().equals(vuelo)) {
+            t.marcarComoUsado();
+        }
+    }   
+            	}
+            
+    
 public abstract String getTipoCliente();
 
 @Override

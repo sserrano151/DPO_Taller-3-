@@ -192,7 +192,6 @@ public class Aerolinea
     	  todos.addAll(v.getTiquetes());{
     		  
     	  }
-      
         return todos;
 
     }
@@ -281,19 +280,23 @@ public class Aerolinea
     public void programarVuelo( String fecha, String codigoRuta, String nombreAvion ) throws Exception
     
     { Ruta r = getRuta(codigoRuta);
-      if (r == null) throw new Exception("La ruta no existe");
+    if (r == null) throw new Exception("La ruta no existe");
 
-     Avion a = null;
-     for (Avion avion : getAviones()) {
+    Avion a = null;
+    for (Avion avion : aviones) {
         if (avion.getNombre().equals(nombreAvion)) { a = avion; break; }
     }
-     if (a == null) throw new Exception("El avión no existe");
-     for (Vuelo v : vuelos) {
-    	 if (v.getFecha().equals(fecha) && v.getAvion().equals(a)) {
-    		 throw new Exception("El avión ya está programado para esa fecha");
+    if (a == null) throw new Exception("El avión no existe");
+
+    for (Vuelo v : vuelos) {
+        if (v.getAvion().equals(a) && v.getFecha().equals(fecha)) {
+            String s1 = r.getHoraSalida(), e1 = r.getHoraLlegada();
+            String s2 = v.getRuta().getHoraSalida(), e2 = v.getRuta().getHoraLlegada();
+            if (s1.compareTo(e2) < 0 && s2.compareTo(e1) < 0)
+                throw new Exception("El avión ya está ocupado en ese intervalo");
     	 }
      }
-     vuelos.add(new Vuelo(fecha, r, a));
+     vuelos.add(new Vuelo(r, fecha, a));
      } 
     
 
@@ -315,35 +318,29 @@ public class Aerolinea
     public int venderTiquetes( String identificadorCliente, String fecha, String codigoRuta, int cantidad ) 
     throws VueloSobrevendidoException, Exception
     {
-    	int r = -1;
+    	 if (cantidad <= 0) throw new IllegalArgumentException("La cantidad debe ser positiva.");
 
-        Cliente c1 = this.getCliente(identificadorCliente);
-        Vuelo v1 = this.getVuelo(fecha, codigoRuta);
-        if (v1 == null) {
-            throw new Exception("El vuelo no existe");
-        }
+         Cliente cliente = getCliente(identificadorCliente);
+         if (cliente == null) throw new Exception("El cliente no existe");
 
-        if (c1 == null) {
-            throw new Exception("El cliente no existe");
-        }
+         Vuelo vuelo = getVuelo(codigoRuta, fecha);
+         if (vuelo == null) throw new Exception("El vuelo no existe");
 
-        if (v1.getAvion().getCapacidad() + cantidad > v1.getAvion().getCapacidad()) {
-            throw new VueloSobrevendidoException(v1);
-        }
-        CalculadoraTarifas ct = null;
+         int ocupados = vuelo.getTiquetes().size();
+         int capacidad = vuelo.getAvion().getCapacidad();
+         if (ocupados + cantidad > capacidad) throw new VueloSobrevendidoException(vuelo);
 
-        if (fecha.substring(5, 7).equals("01") || fecha.substring(5, 7).equals("07")) {
-            ct = new CalculadoraTarifasTemporadaBaja();
-        } else {
-            ct = new CalculadoraTarifasTemporadaAlta();
-        }
+         int mes = Integer.parseInt(fecha.substring(5, 7));
+         CalculadoraTarifas calc = ((mes >= 1 && mes <= 5) || (mes >= 9 && mes <= 11))
+                 ? new CalculadoraTarifasTemporadaBaja()
+                 : new CalculadoraTarifasTemporadaAlta();
 
-        r = v1.venderTiquetes(c1, ct, cantidad);
-        if (-1 <= r && r <= 0) {
-            throw new Exception("No se pudieron vender los tiquetes");
+         int total = vuelo.venderTiquetes(cliente, calc, cantidad);
+         if (total <= 0) throw new Exception("No se pudieron vender los tiquetes");
+         return total;
         }
-        return r;
-    }
+        
+    
 
     /**
      * Registra que un cierto vuelo fue realizado
@@ -355,7 +352,7 @@ public class Aerolinea
     	Vuelo v = getVuelo(codigoRuta, fecha);
         if (v == null) return;
         for (Tiquete t : v.getTiquetes()) {
-        	t.setUsado(true);
+        	if (!t.esUsado()) t.marcarComoUsado();
         }
     }
 
@@ -366,13 +363,10 @@ public class Aerolinea
      */
     public String consultarSaldoPendienteCliente( String identificadorCliente )
     {
-    	Cliente c = this.clientes.get(identificadorCliente);
-        if (c == null) return "0";
-        int total = 0;
-        for (Tiquete t : c.getTiquetes()) {
-            if (!t.esUsado()) total += t.getTarifa();
+    	Cliente c = getCliente(identificadorCliente);
+        int total = (c == null) ? 0 : c.getSaldoPendiente();
+        return String.valueOf(total);
        
     }
-        return String.valueOf(total);
-}
+      
 }

@@ -9,9 +9,10 @@ public abstract class CalculadoraTarifas {
 	 public double IMPUESTO = 0.28;
 
 	    public int calcularTarifa(Vuelo vuelo, Cliente cliente) {
-	        return (int) (calcularCostoBase(vuelo, cliente) * (1 + IMPUESTO)
-	                        - (calcularPorcentajeDescuento(cliente) * (calcularCostoBase(vuelo, cliente) * (1 + IMPUESTO))));
-		
+	    	int costoBase = calcularCostoBase(vuelo, cliente);
+	        int descuento = (int) Math.round(costoBase * calcularPorcentajeDescuento(cliente));
+	        int impuestos = calcularValorImpuestos(costoBase);
+	        return costoBase + impuestos - descuento;
 	}
 	    protected abstract int calcularCostoBase(Vuelo vuelo, Cliente cliente);
 

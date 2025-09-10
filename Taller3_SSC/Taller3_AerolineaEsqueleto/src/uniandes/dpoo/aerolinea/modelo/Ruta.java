@@ -15,6 +15,12 @@ public class Ruta
     
     public Ruta(String horaSalida, String horaLlegada, String codigoRuta, Aeropuerto origen, Aeropuerto destino) {
 		super();
+		if (codigoRuta == null || codigoRuta.isBlank())
+            throw new IllegalArgumentException("Código de ruta inválido.");
+        if (origen == null || destino == null)
+            throw new IllegalArgumentException("Aeropuertos inválidos.");
+        if (origen.equals(destino))
+            throw new IllegalArgumentException("Origen y destino no pueden ser el mismo aeropuerto.");
 		this.horaSalida = horaSalida;
 		this.horaLlegada = horaLlegada;
 		this.codigoRuta = codigoRuta;
